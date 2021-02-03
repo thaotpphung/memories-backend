@@ -18,7 +18,8 @@ app.get('/', (req, res) => {
   res.send("Hello to memories API");
 });
 
-const dbURL = process.env.MONGODB_URI || "mongodb://127.0.0.1/react-stockapp"
+// const dbURL = process.env.MONGODB_URI || "mongodb://127.0.0.1/memories"
+const dbURL = "mongodb://127.0.0.1/memories";
 
 mongoose.connect(dbURL, {
   useNewUrlParser: true,
