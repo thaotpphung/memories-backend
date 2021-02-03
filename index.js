@@ -1,39 +1,31 @@
+
 import express from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import cors from 'cors';
+
 import postRoutes from './routes/posts.js';
-import dotenv from 'dotenv';
+import userRouter from "./routes/user.js";
 
 const app = express();
-dotenv.config();
 
 app.use(bodyParser.json({ limit: '30mb', extended: true }))
 app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }))
 app.use(cors());
 
 app.use('/posts', postRoutes);
+app.use("/user", userRouter);
 
 app.get('/', (req, res) => {
   res.send("Hello to memories API");
 });
 
-// const dbURL = process.env.MONGODB_URI || "mongodb://127.0.0.1/memories"
-const dbURL = "mongodb://127.0.0.1/memories";
+const CONNECTION_URL = process.env.MONGODB_URI || "mongodb://127.0.0.1/memories"
 
-mongoose.connect(dbURL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true,
-  useFindAndModify: false,
-}).then(() => {
-  console.log("Connected to DB! " + dbURL)
-}).catch(err => {
-  console.log(err.message);
-});
+const PORT = process.env.PORT|| 9000;
 
-let port = process.env.PORT || 9000;
-app.listen(port, () => {
-  console.log("Stock App Server Has Started! " + port);
-});
+mongoose.connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => app.listen(PORT, () => console.log(`Server Running on Port: http://localhost:${PORT}`)))
+  .catch((error) => console.log(`${error} did not connect`));
 
+mongoose.set('useFindAndModify', false);
